@@ -30,14 +30,23 @@
 
 - (void)testNil
 {
-    NSString *basicNil = [JSONizer stringify:nil];
-    XCTAssertEqualObjects(basicNil, @"", @"Nil did not stringify correctly");
+    XCTAssertEqualObjects([JSONizer stringify:nil],
+                          @"",
+                          @"Nil did not stringify correctly");
 }
 
 - (void)testNull
 {
-    NSString *basicNull = [JSONizer stringify:[NSNull null]];
-    XCTAssertEqualObjects(basicNull, @"null", @"Null did not stringify correctly");
+    XCTAssertEqualObjects([JSONizer stringify:[NSNull null]],
+                          @"null",
+                          @"Null did not stringify correctly");
+}
+
+- (void)testNullByExtension
+{
+    XCTAssertEqualObjects([NSNull null].toJSON,
+                          @"null",
+                          @"Null did not stringify correctly");
 }
 
 - (void)testString
@@ -46,10 +55,25 @@
     XCTAssertEqualObjects(basicString, @"\"Hello World!\"", @"String did not stringify correctly");
 }
 
+- (void)testStringByExtension
+{
+    XCTAssertEqualObjects(@"Hello World!".toJSON,
+                          @"\"Hello World!\"",
+                          @"String did not stringify correctly");
+}
+
 - (void)testNumber
 {
-    NSString *basicNumber = [JSONizer stringify:@1];
-    XCTAssertEqualObjects(basicNumber, @"1", @"Number did not stringify correctly");
+    XCTAssertEqualObjects( [JSONizer stringify:@1],
+                          @"1",
+                          @"Number did not stringify correctly");
+}
+
+- (void)testNumberByExtension
+{
+    XCTAssertEqualObjects((@1).toJSON,
+                          @"1",
+                          @"Number did not stringify correctly");
 }
 
 - (void)testDate
@@ -59,29 +83,63 @@
     [formatter setDateFormat:@"'\"'yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ'\"'"];
     [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
 
-    NSString *basicDate = [JSONizer stringify:now];
-    NSLog(@"Date is: %@", basicDate);
-    XCTAssertEqualObjects(basicDate, [formatter stringFromDate:now], @"Date did not match");
+    XCTAssertEqualObjects([JSONizer stringify:now],
+                          [formatter stringFromDate:now],
+                          @"Date did not match");
+}
+
+- (void)testDateByExtension
+{
+    NSDate *now = [NSDate date];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"'\"'yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ'\"'"];
+    [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+
+    XCTAssertEqualObjects(now.toJSON,
+                          [formatter stringFromDate:now],
+                          @"Date did not match");
 }
 
 - (void)testKeyValue
 {
-    NSDictionary *dict = @{ @"key": @1 };
-    NSString *basicKeyValue = [JSONizer stringify:dict];
-    XCTAssertEqualObjects(basicKeyValue, @"{\"key\":1}", @"Object did not stringify correctly");
+    XCTAssertEqualObjects([JSONizer stringify:@{ @"key": @1 }],
+                          @"{\"key\":1}",
+                          @"Object did not stringify correctly");
+}
+
+- (void)testKeyValueByExtension
+{
+    XCTAssertEqualObjects(@{ @"key": @1 }.toJSON,
+                          @"{\"key\":1}",
+                          @"Object did not stringify correctly");
 }
 
 - (void)testArray
 {
-    NSString *basicArray = [JSONizer stringify:@[@1,@2,@3]];
-    XCTAssertEqualObjects(basicArray, @"[1,2,3]", @"Array did not stringify correctly");
+    XCTAssertEqualObjects([JSONizer stringify:(@[@1,@2,@3])],
+                          @"[1,2,3]",
+                          @"Array did not stringify correctly");
+}
+
+- (void)testArrayByExtension
+{
+    XCTAssertEqualObjects((@[@1,@2,@3]).toJSON,
+                          @"[1,2,3]",
+                          @"Array did not stringify correctly");
 }
 
 - (void)testKeyValueWithNull
 {
-    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"key", nil];
-    NSString *basicKeyValue = [JSONizer stringify:dict];
-    XCTAssertEqualObjects(basicKeyValue, @"{\"key\":null}", @"Object did not stringify correctly");
+    XCTAssertEqualObjects([JSONizer stringify:@{ @"key": [NSNull null] }],
+                          @"{\"key\":null}",
+                          @"Object did not stringify correctly");
+}
+
+- (void)testKeyValueWithNullByExtension
+{
+    XCTAssertEqualObjects((@{ @"key": [NSNull null] }).toJSON,
+                          @"{\"key\":null}",
+                          @"Object did not stringify correctly");
 }
 
 - (void)testObjectWithDateInIt
@@ -94,10 +152,28 @@
     [formatter setDateFormat:@"'\"'yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ'\"'"];
     [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
 
-    NSString *nestedDates = [JSONizer stringify:array];
     NSString *expected = [NSString stringWithFormat:@"[%@,{\"straight\":%@}]", [formatter stringFromDate:now], [formatter stringFromDate:now]];
 
-    XCTAssertEqualObjects(nestedDates, expected, @"Nested objects did not stringify dates correctly");
+    XCTAssertEqualObjects([JSONizer stringify:array],
+                          expected,
+                          @"Nested objects did not stringify dates correctly");
+}
+
+- (void)testObjectWithDateInItByExtension
+{
+    NSDate *now = [NSDate date];
+    NSDictionary *dict = @{ @"straight": now };
+    NSArray *array = @[now, dict];
+
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"'\"'yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ'\"'"];
+    [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+
+    NSString *expected = [NSString stringWithFormat:@"[%@,{\"straight\":%@}]", [formatter stringFromDate:now], [formatter stringFromDate:now]];
+
+    XCTAssertEqualObjects(array.toJSON,
+                          expected,
+                          @"Nested objects did not stringify dates correctly");
 }
 
 @end

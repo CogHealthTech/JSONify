@@ -146,3 +146,36 @@
 }
 
 @end
+
+#define TOJSON_EXTENSION - (NSString *)toJSON { return [JSONizer stringify:self]; }
+#define TOPRETTYJSON_EXTENSION - (NSString *)toPrettyJSON { return [JSONizer stringify:self prettily:YES]; }
+
+@implementation NSDictionary (JSONizer)
+TOJSON_EXTENSION
+TOPRETTYJSON_EXTENSION
+@end
+
+@implementation NSArray (JSONizer)
+TOJSON_EXTENSION
+TOPRETTYJSON_EXTENSION
+@end
+
+@implementation NSDate (JSONizer)
+TOJSON_EXTENSION
+TOPRETTYJSON_EXTENSION
+@end
+
+@implementation NSString (JSONizer)
+TOJSON_EXTENSION
+TOPRETTYJSON_EXTENSION
+@end
+
+@implementation NSNumber (JSONizer)
+TOJSON_EXTENSION
+TOPRETTYJSON_EXTENSION
+@end
+
+@implementation NSNull (JSONizer)
+TOJSON_EXTENSION
+TOPRETTYJSON_EXTENSION
+@end

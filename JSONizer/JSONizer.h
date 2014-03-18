@@ -14,3 +14,33 @@
 + (NSString *) stringify:(id)object prettily:(BOOL)makePretty;
 
 @end
+
+@interface NSDictionary (JSONizer)
+- (NSString *)toJSON;
+- (NSString *)toPrettyJSON;
+@end
+
+@interface NSArray (JSONizer)
+- (NSString *)toJSON;
+- (NSString *)toPrettyJSON;
+@end
+
+@interface NSDate (JSONizer)
+- (NSString *)toJSON;
+- (NSString *)toPrettyJSON;
+@end
+
+@interface NSString (JSONizer)
+- (NSString *)toJSON;
+- (NSString *)toPrettyJSON;
+@end
+
+@interface NSNumber (JSONizer)
+- (NSString *)toJSON;
+- (NSString *)toPrettyJSON;
+@end
+
+@interface NSNull (JSONizer)
+- (NSString *)toJSON;
+- (NSString *)toPrettyJSON;
+@end
