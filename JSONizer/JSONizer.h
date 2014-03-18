@@ -10,4 +10,7 @@
 
 @interface JSONizer : NSObject
 
++ (NSString *) stringify:(id)object;
++ (NSString *) stringify:(id)object prettily:(BOOL)makePretty;
+
 @end
